@@ -1,102 +1,272 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Switch, TouchableOpacity } from 'react-native';
+import { Text, View, Separator } from '@/src/components';
+import { spacing } from '@/src/theme/spacing';
+import { colors } from '@/src/theme/colors';
+import { shadows } from '@/src/theme/shadows';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+export default function SettingsScreen() {
+  const { theme, themeMode, setThemeMode } = useTheme();
+  const themeColors = colors[theme];
 
-export default function TabTwoScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <ScrollView
+      style={[styles.container, { backgroundColor: themeColors.background.primary }]}
+      contentContainerStyle={styles.content}
+    >
+      <View style={styles.header}>
+        <Text variant="h1">Settings</Text>
+        <Text variant="body" color={themeColors.text.secondary}>
+          Customize your app experience
+        </Text>
+      </View>
+
+      <Separator spacing={1} />
+
+      {/* Theme Settings */}
+      <View style={styles.section}>
+        <Text variant="h3">Appearance</Text>
+
+        <View
+          style={[
+            styles.settingCard,
+            { backgroundColor: themeColors.background.card },
+            shadows.sm,
+          ]}
+        >
+          <Text variant="h4">Theme Mode</Text>
+
+          {/* Light Theme Option */}
+          <TouchableOpacity
+            style={[
+              styles.themeOption,
+              { borderColor: themeColors.border.primary },
+              themeMode === 'light' && {
+                borderColor: themeColors.interactive.primary,
+                borderWidth: 2,
+              },
+            ]}
+            onPress={() => setThemeMode('light')}
+          >
+            <View style={styles.themeOptionContent}>
+              <View>
+                <Text variant="body" semibold>
+                  Light
+                </Text>
+                <Text variant="caption" color={themeColors.text.secondary}>
+                  Always use light theme
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.radioButton,
+                  { borderColor: themeColors.border.primary },
+                  themeMode === 'light' && {
+                    borderColor: themeColors.interactive.primary,
+                  },
+                ]}
+              >
+                {themeMode === 'light' && (
+                  <View
+                    style={[
+                      styles.radioButtonInner,
+                      { backgroundColor: themeColors.interactive.primary },
+                    ]}
+                  />
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* Dark Theme Option */}
+          <TouchableOpacity
+            style={[
+              styles.themeOption,
+              { borderColor: themeColors.border.primary },
+              themeMode === 'dark' && {
+                borderColor: themeColors.interactive.primary,
+                borderWidth: 2,
+              },
+            ]}
+            onPress={() => setThemeMode('dark')}
+          >
+            <View style={styles.themeOptionContent}>
+              <View>
+                <Text variant="body" semibold>
+                  Dark
+                </Text>
+                <Text variant="caption" color={themeColors.text.secondary}>
+                  Always use dark theme
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.radioButton,
+                  { borderColor: themeColors.border.primary },
+                  themeMode === 'dark' && {
+                    borderColor: themeColors.interactive.primary,
+                  },
+                ]}
+              >
+                {themeMode === 'dark' && (
+                  <View
+                    style={[
+                      styles.radioButtonInner,
+                      { backgroundColor: themeColors.interactive.primary },
+                    ]}
+                  />
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* System Theme Option */}
+          <TouchableOpacity
+            style={[
+              styles.themeOption,
+              { borderColor: themeColors.border.primary },
+              themeMode === 'system' && {
+                borderColor: themeColors.interactive.primary,
+                borderWidth: 2,
+              },
+            ]}
+            onPress={() => setThemeMode('system')}
+          >
+            <View style={styles.themeOptionContent}>
+              <View>
+                <Text variant="body" semibold>
+                  System
+                </Text>
+                <Text variant="caption" color={themeColors.text.secondary}>
+                  Follow device settings
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.radioButton,
+                  { borderColor: themeColors.border.primary },
+                  themeMode === 'system' && {
+                    borderColor: themeColors.interactive.primary,
+                  },
+                ]}
+              >
+                {themeMode === 'system' && (
+                  <View
+                    style={[
+                      styles.radioButtonInner,
+                      { backgroundColor: themeColors.interactive.primary },
+                    ]}
+                  />
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.currentThemeInfo}>
+            <Text variant="caption" color={themeColors.text.tertiary}>
+              Current theme: {theme === 'light' ? '☀️ Light' : '🌙 Dark'}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <Separator spacing={1} />
+
+      {/* Info Section */}
+      <View style={styles.section}>
+        <Text variant="h3">About Design System</Text>
+        <View
+          style={[
+            styles.infoCard,
+            { backgroundColor: themeColors.background.secondary },
+          ]}
+        >
+          <Text variant="body">
+            All typography, colors, spacing, and shadows are controlled from a central theme system.
+          </Text>
+          <Text variant="bodySmall" color={themeColors.text.secondary}>
+            Changes made to the theme will reflect across the entire app instantly.
+          </Text>
+        </View>
+
+        <View style={styles.themeFiles}>
+          <Text variant="caption" color={themeColors.text.tertiary}>
+            📁 Theme files:
+          </Text>
+          <Text variant="captionSmall" color={themeColors.text.tertiary}>
+            • src/theme/colors.ts
+          </Text>
+          <Text variant="captionSmall" color={themeColors.text.tertiary}>
+            • src/theme/typography.ts
+          </Text>
+          <Text variant="captionSmall" color={themeColors.text.tertiary}>
+            • src/theme/spacing.ts
+          </Text>
+          <Text variant="captionSmall" color={themeColors.text.tertiary}>
+            • src/theme/shadows.ts
+          </Text>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    padding: spacing.gutter,
+  },
+  header: {
+    paddingVertical: spacing.xl,
+    gap: spacing.xs,
+  },
+  section: {
+    paddingVertical: spacing.lg,
+    gap: spacing.md,
+  },
+  settingCard: {
+    padding: spacing.cardPadding,
+    borderRadius: spacing.radius.lg,
+    gap: spacing.md,
+  },
+  themeOption: {
+    padding: spacing.md,
+    borderRadius: spacing.radius.md,
+    borderWidth: 1,
+  },
+  themeOptionContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  radioButton: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioButtonInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  currentThemeInfo: {
+    paddingTop: spacing.xs,
+    alignItems: 'center',
+  },
+  infoCard: {
+    padding: spacing.md,
+    borderRadius: spacing.radius.md,
+    gap: spacing.sm,
+  },
+  themeFiles: {
+    gap: spacing.xxs,
+  },
+});
 
 const styles = StyleSheet.create({
   headerImage: {
